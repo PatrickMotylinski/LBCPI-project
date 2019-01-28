@@ -13,7 +13,7 @@ from sqlalchemy import create_engine
 
 #### Connect to SQLite. NB!!! Change path accordingly!
 wdir = '/home/patrickm/projects/GeoLife/'
-database = 'GeoLifeDBtmp'
+database = 'GeoLifeDB'
 suffix = ".db"
 
 engine = create_engine('sqlite:///'+wdir+database+suffix, echo=False)
@@ -45,9 +45,9 @@ for uID in dirslst:
     traj.sort()
     dct = { trk : traj.index(trk) for trk in traj }       
     usrdct.update( {uID : dct} )
-    #print("usrID ", uID, " dict : ", usrdct)
-#### Loop over users. Remove the dummy column (only containing '0'), add columns for user IDs and track Ids
 
+    
+#### Loop over users. Remove the dummy column (only containing '0'), add columns for user IDs and track Ids
 for uID in dirslst:
     workdir = rootdir + "/" + uID + "/" + "Trajectory/"
     for _, _, files in os.walk(workdir): 
@@ -60,29 +60,8 @@ for uID in dirslst:
                 df['usrID']   = int(uID)
                 df['trkID']   = trkID
                 df['trk no']  = usrdct[str(uID)][str(trkID)]
-                if int(uID) < int(len(dirslst)/20.0):
-                    df.to_sql(database, con=engine, if_exists = 'append', index=False )
-                #dfs.append(df)
-                #trklst = df['trkID'].unique().tolist()
-                #trklst.sort()
-                #dct2 = { trk : trklst.index(trk) for trk in trklst }
-                #print (trklst)
-                #print(dct2)
-                #df['trk no'] = df['trkID'].map(usrdct[uID])
-                #df['trk no'] = df['trkID'].
-                #print (df)
-                #dfs.append(df)
-#        df = pd.concat(dfs)
-#        trklst = df['trkID'].unique().tolist()
-#        trklst.sort()
-#        dct2 = { trk : trklst.index(trk) for trk in trklst }
-#        print (trklst)
-#        print(dct2)
-#        df['trk no'] = df['trkID'].map(usrdct[uID])
-#        df.to_sql(database, con=engine, if_exists = 'append', index=False )
-    
-#### Merge all the dataframes into one
-#one_big_table = pd.concat(dfs)
+                #if int(uID) < int(len(dirslst)/20.0):
+                df.to_sql(database, con=engine, if_exists = 'append', index=False )
 
-#### Commit to the database and close the file.
+                
 trans.commit()
